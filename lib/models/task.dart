@@ -1,5 +1,5 @@
 class Task{
-  int? id;
+  int id;
   String content;
   bool completed;    //détermine si la tâche a été réalisée ou non
   DateTime createdAt;

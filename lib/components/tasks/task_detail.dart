@@ -4,9 +4,10 @@ import '../../models/task.dart';
 
 
 class TaskDetails extends StatelessWidget {
-  const TaskDetails({ Key? key, required this.task, required this.onClosed }) : super(key: key);
+  const TaskDetails({ Key? key, required this.task, required this.onClosed, required this.onDelete}) : super(key: key);
   final Task? task;
   final Function onClosed;
+  final Function onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +16,14 @@ class TaskDetails extends StatelessWidget {
         content: SingleChildScrollView(
           child: ListBody(
             children:<Widget>[
-              Text(task!.content),
-              Text(task!.createdAt.toString()),
+              Text(task!.content, style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              )),
+              const SizedBox(height: 10),
+              Text(task!.createdAt.toString().substring(1, 19)),
+              const SizedBox(height: 10),
+              task!.completed ? const Text('status : not done', style: TextStyle( color : Colors.red)) : const Text('status : done', style : TextStyle(color : Colors.green))
             ],
           ),
         ),
@@ -25,10 +32,25 @@ class TaskDetails extends StatelessWidget {
             child: const Text('ok'),
             onPressed: () {
               onClosed();
-              // Navigator.of(context).pop();
+            },
+          ),
+           TextButton(
+            child: const Text('Delete'),
+            onPressed: () {
+              onDelete();
+            },
+          ),
+           TextButton(
+            child: const Text('Update'),
+            onPressed: () {
             },
           ),
         ],
     );
   }
 }
+
+
+/*Si l'utilisateur clique sur le bouton de suppression, la Task concernée doit-être
+supprimée et les données du composant TaskMaster mises à jour. Enfin, le
+composant TaskDetails doit être masqué */

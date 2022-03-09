@@ -31,6 +31,12 @@ class _AllTasksState extends State<AllTasks> {
       chosenTask = null;
     });
   }
+
+  void onDelete(){
+    setState(() {
+      tasks.removeWhere((item) => item.id == chosenTask!.id);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +51,7 @@ class _AllTasksState extends State<AllTasks> {
         Visibility(
         child: TaskMaster(tasks: tasks, onClickTask : onClickTask),
         visible: ( chosenTask == null ),
-        replacement: TaskDetails(task : chosenTask, onClosed: onClosed) 
+        replacement: TaskDetails(task : chosenTask, onClosed: onClosed, onDelete : onDelete) 
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
