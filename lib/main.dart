@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'screens/all_tasks.dart';
+import 'package:provider/provider.dart';
+import '../data/tasks_collection.dart';
 
 void main() {
-  runApp(const TodoList());
+  runApp(
+    MultiProvider(
+      providers : [
+        ChangeNotifierProvider(create: (_) => CollectionData()),
+      ],
+          child : const TodoList()),
+    );
 }
 
 class TodoList extends StatelessWidget {
@@ -16,7 +24,12 @@ class TodoList extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Poppins',
       ),
-      home: const AllTasks(title : 'To do list'),
+      // home: const AllTasks(title : 'To do list'),
+      initialRoute: '/all_tasks',
+      routes : {
+        '/all_tasks' : (context) => const AllTasks(title : 'To do list'),
+        // 'one_task' :(context) => const TaskDetails(title : 'To do list')
+      } 
     );
   }
 }

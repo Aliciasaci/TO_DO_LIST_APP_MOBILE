@@ -6,6 +6,8 @@ import '../components/tasks/task_master.dart';
 import '../components/tasks/task_detail.dart';
 import 'package:todolist/data/tasks.dart' as data;
 import '../models/task.dart';
+import 'package:provider/provider.dart';
+import '../data/tasks_collection.dart';
 
 class AllTasks extends StatefulWidget {
   const AllTasks({Key? key, required this.title}) : super(key: key);
@@ -20,23 +22,41 @@ class _AllTasksState extends State<AllTasks> {
   Task? chosenTask;
 
   //Récuperer la task envoyé depuis PreviewTask
-  void onClickTask(task){
+  void onClickTask(task) {
     setState(() {
       chosenTask = task;
     });
   }
 
-  void onClosed(){
+  void onClosed() {
     setState(() {
       chosenTask = null;
     });
   }
 
-  void onDelete(){
-    setState(() {
-      tasks.removeWhere((item) => item.id == chosenTask!.id);
-    });
+  void onDelete() {
+    final snackBar = SnackBar(
+      content: const Text('Are you sure you wanna delete?'),
+      duration: const Duration(seconds: 3),
+      backgroundColor: Color.fromARGB(255, 231, 193, 22),
+      action: SnackBarAction(
+        label: 'Yes',
+        textColor: Colors.white,
+        onPressed: () {
+          context.read<CollectionData>().delete(chosenTask!.id);
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Deleted'),
+          ));
+          onClosed();
+        },
+      ),
+    );
+
+
+    // Appelle la snack bar
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,15 +67,13 @@ class _AllTasksState extends State<AllTasks> {
         backgroundColor: Color.fromARGB(255, 231, 193, 22),
         elevation: 0.0,
       ),
-      body : 
-        Visibility(
-        child: TaskMaster(tasks: tasks, onClickTask : onClickTask),
-        visible: ( chosenTask == null ),
-        replacement: TaskDetails(task : chosenTask, onClosed: onClosed, onDelete : onDelete) 
-      ),
+      body: Visibility(
+          child: TaskMaster(tasks: tasks, onClickTask: onClickTask),
+          visible: (chosenTask == null),
+          replacement: TaskDetails(
+              task: chosenTask, onClosed: onClosed, onDelete: onDelete)),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-        },
+        onPressed: () {},
         tooltip: 'Add a Task',
         child: const Icon(Icons.add),
         backgroundColor: Color.fromARGB(255, 231, 193, 22),
@@ -64,7 +82,3 @@ class _AllTasksState extends State<AllTasks> {
     );
   }
 }
-
-
-
-
